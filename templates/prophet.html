@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Daily Prophet | Hogwarts</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital@1&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+.bg-image {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -1;
+  background: url('/static/images/prophet.jpg') center/cover no-repeat;
+  filter: brightness(0.35);
+}
+body { color:#2a2218; font-family:'Lato',sans-serif; min-height:100vh; padding-bottom:60px; }
+nav { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; padding:16px; background:rgba(0,0,0,0.6); backdrop-filter:blur(10px); position:sticky; top:0; z-index:100; border-bottom:1px solid rgba(240,192,64,0.2); }
+nav a { color:#f0c040; text-decoration:none; font-family:'Cinzel',serif; font-size:0.85rem; letter-spacing:1px; }
+nav a:hover { color:#fff; }
+.paper { max-width:700px; margin:40px auto; background:#ece4d0; border-radius:4px; padding:40px; box-shadow:0 10px 50px rgba(0,0,0,0.5); }
+.masthead { text-align:center; border-bottom:4px double #2a2218; padding-bottom:16px; margin-bottom:24px; }
+.masthead h1 { font-family:'Cinzel',serif; font-size:2.4rem; letter-spacing:2px; }
+.masthead .date { font-size:0.8rem; letter-spacing:2px; text-transform:uppercase; margin-top:6px; color:#5a4a30; }
+.headline { font-family:'Playfair Display', serif; font-style:italic; font-size:1.6rem; text-align:center; margin:20px 0 14px; line-height:1.3; }
+.article { font-size:1rem; line-height:1.8; column-count:1; text-align:justify; }
+.article::first-letter { font-family:'Cinzel',serif; font-size:3rem; float:left; line-height:0.8; margin-right:8px; margin-top:6px; }
+.loading { text-align:center; padding:60px 0; color:#5a4a30; font-style:italic; }
+.refresh-btn { display:block; margin:24px auto 0; background:#2a2218; color:#ece4d0; border:none; padding:12px 28px; border-radius:6px; font-family:'Cinzel',serif; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<div class="bg-image"></div>
+
+<nav>
+  <a href="/home">🏠 Home</a>
+  <a href="/sorting">🎩 Sorting Hat</a>
+  <a href="/spells">📖 Spell Book</a>
+  <a href="/halloffame">🏆 Hall of Fame</a>
+  <a href="/map">🗺️ Map</a>
+  <a href="/potions">🧪 Potions</a>
+  <a href="/patronus">🦌 Patronus</a>
+  <a href="/prophet">📰 Prophet</a>
+  <a href="/quidditch">🏐 Quidditch</a>
+</nav>
+
+<div class="paper">
+  <div class="masthead">
+    <h1>The Daily Prophet</h1>
+    <div class="date" id="todayDate"></div>
+  </div>
+  <div id="content" class="loading">Owl en route with today's edition...</div>
+  <button class="refresh-btn" onclick="getNews()">Get Latest Edition 🦉</button>
+</div>
+
+<script>
+  document.getElementById("todayDate").textContent = new Date().toDateString();
+
+  async function getNews() {
+    const content = document.getElementById("content");
+    content.className = "loading";
+    content.textContent = "Owl en route with today's edition...";
+
+    const res = await fetch("/generate_news", { method: "POST" });
+    const data = await res.json();
+
+    content.className = "";
+    content.innerHTML = `
+      <div class="headline">${data.headline}</div>
+      <div class="article">${data.article}</div>
+    `;
+  }
+
+  getNews();
+</script>
+</body>
+</html>

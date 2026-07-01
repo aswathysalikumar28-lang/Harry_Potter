@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Potions Class | Hogwarts</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+.bg-image {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -1;
+  background: url('/static/images/potions.jpg') center/cover no-repeat;
+  filter: brightness(0.3);
+}
+body { color:#e8d5b7; font-family:'Lato',sans-serif; min-height:100vh; padding-bottom:60px; }
+nav { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; padding:16px; background:rgba(0,0,0,0.5); backdrop-filter:blur(10px); position:sticky; top:0; z-index:100; border-bottom:1px solid rgba(240,192,64,0.2); }
+nav a { color:#f0c040; text-decoration:none; font-family:'Cinzel',serif; font-size:0.85rem; letter-spacing:1px; }
+nav a:hover { color:#fff; }
+header { text-align:center; padding:40px 20px 10px; }
+header h1 { font-family:'Cinzel',serif; font-size:2rem; color:#f0c040; text-shadow:0 0 20px rgba(240,192,64,0.5); }
+header p { color:#a89060; margin-top:8px; }
+.layout { max-width:900px; margin:30px auto; padding:0 20px; display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+@media(max-width:700px){ .layout{grid-template-columns:1fr;} }
+.panel { background:rgba(0,0,0,0.5); backdrop-filter:blur(10px); border:1px solid rgba(240,192,64,0.25); border-radius:14px; padding:24px; }
+.panel h2 { font-family:'Cinzel',serif; color:#f0c040; margin-bottom:16px; font-size:1.1rem; }
+.recipe-select { width:100%; background:rgba(0,0,0,0.4); border:1px solid #3a3a60; color:#e8d5b7; padding:10px; border-radius:8px; margin-bottom:16px; }
+.ingredients { display:flex; flex-wrap:wrap; gap:8px; }
+.ingredient { background:rgba(255,255,255,0.06); border:1px solid rgba(240,192,64,0.3); color:#e8d5b7; padding:8px 14px; border-radius:20px; cursor:pointer; font-size:0.85rem; transition:0.2s; }
+.ingredient:hover { background:rgba(240,192,64,0.2); transform:scale(1.05); }
+.cauldron { text-align:center; }
+.cauldron-visual { font-size:5rem; margin:10px 0; filter:drop-shadow(0 0 20px rgba(120,60,200,0.4)); animation:bubble 2s ease-in-out infinite; }
+@keyframes bubble { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+.added-list { min-height:60px; background:rgba(0,0,0,0.3); border-radius:8px; padding:10px; margin:14px 0; font-size:0.85rem; color:#c8a870; text-align:left; }
+.added-list span { display:inline-block; background:rgba(240,192,64,0.15); padding:4px 10px; border-radius:14px; margin:3px; }
+.brew-btn, .clear-btn { font-family:'Cinzel',serif; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; font-weight:bold; margin:4px; }
+.brew-btn { background:linear-gradient(135deg,#f0c040,#c8960c); color:#0a0a1a; }
+.clear-btn { background:rgba(255,255,255,0.1); color:#e8d5b7; }
+.result { margin-top:16px; padding:16px; border-radius:10px; display:none; font-size:0.9rem; }
+.result.success { background:rgba(40,140,40,0.2); border:1px solid #4a8a4a; display:block; }
+.result.fail { background:rgba(140,40,40,0.2); border:1px solid #8a4a4a; display:block; }
+</style>
+</head>
+<body>
+
+<div class="bg-image"></div>
+
+<nav>
+  <a href="/home">🏠 Home</a>
+  <a href="/sorting">🎩 Sorting Hat</a>
+  <a href="/spells">📖 Spell Book</a>
+  <a href="/halloffame">🏆 Hall of Fame</a>
+  <a href="/map">🗺️ Map</a>
+  <a href="/potions">🧪 Potions</a>
+  <a href="/patronus">🦌 Patronus</a>
+  <a href="/prophet">📰 Prophet</a>
+  <a href="/quidditch">🏐 Quidditch</a>
+</nav>
+
+<header>
+  <h1>🧪 Potions Class</h1>
+  <p>Add the right ingredients, in the right order, before the cauldron cools</p>
+</header>
+
+<div class="layout">
+  <div class="panel">
+    <h2>Choose a Recipe</h2>
+    <select class="recipe-select" id="recipeSelect" onchange="loadRecipe()"></select>
+    <h2>Ingredients</h2>
+    <div class="ingredients" id="ingredientList"></div>
+  </div>
+
+  <div class="panel cauldron">
+    <h2>The Cauldron</h2>
+    <div class="cauldron-visual">🍯</div>
+    <div class="added-list" id="addedList"></div>
+    <button class="brew-btn" onclick="brew()">Brew Potion ✨</button>
+    <button class="clear-btn" onclick="clearCauldron()">Clear</button>
+    <div class="result" id="result"></div>
+  </div>
+</div>
+
+<script>
+  const recipes = {
+    "Polyjuice Potion": { ingredients: ["Lacewing Flies","Leeches","Fluxweed","Knotgrass","Bit of the Person"], allIngredients: ["Lacewing Flies","Leeches","Fluxweed","Knotgrass","Bit of the Person","Boomslang Skin","Daisy Roots","Lionfish Spine"] },
+    "Felix Felicis": { ingredients: ["Ashwinder Egg","Squill Bulb","Murtlap Tentacle","Occamy Eggshell"], allIngredients: ["Ashwinder Egg","Squill Bulb","Murtlap Tentacle","Occamy Eggshell","Doxy Wings","Billywig Sting","Newt Spleen"] },
+    "Veritaserum": { ingredients: ["Jobberknoll Feather","Standard Ingredient","Moondew Drops"], allIngredients: ["Jobberknoll Feather","Standard Ingredient","Moondew Drops","Lethe River Water","Valerian Sprigs","Armadillo Bile"] },
+    "Wolfsbane Potion": { ingredients: ["Wolfsbane Plant","Powdered Moonstone","Mistletoe Berries"], allIngredients: ["Wolfsbane Plant","Powdered Moonstone","Mistletoe Berries","Belladonna","Wormwood","Scarab Beetles"] },
+  };
+
+  let added = [];
+  const select = document.getElementById("recipeSelect");
+  Object.keys(recipes).forEach(name => {
+    const opt = document.createElement("option");
+    opt.value = name; opt.textContent = name;
+    select.appendChild(opt);
+  });
+
+  function loadRecipe() {
+    clearCauldron();
+    const recipe = recipes[select.value];
+    const shuffled = [...recipe.allIngredients].sort(() => Math.random() - 0.5);
+    document.getElementById("ingredientList").innerHTML = shuffled.map(i =>
+      `<div class="ingredient" onclick="addIngredient('${i}')">${i}</div>`
+    ).join("");
+  }
+
+  function addIngredient(name) {
+    added.push(name);
+    renderAdded();
+  }
+
+  function renderAdded() {
+    document.getElementById("addedList").innerHTML = added.length
+      ? added.map(i => `<span>${i}</span>`).join("")
+      : "Click ingredients to add them...";
+  }
+
+  function clearCauldron() {
+    added = [];
+    document.getElementById("result").style.display = "none";
+    document.getElementById("result").className = "result";
+    renderAdded();
+  }
+
+  function brew() {
+    const recipe = recipes[select.value];
+    const correct = JSON.stringify(recipe.ingredients) === JSON.stringify(added);
+    const result = document.getElementById("result");
+    if (correct) {
+      result.className = "result success";
+      result.textContent = `✨ Success! The cauldron glows and you've brewed a perfect ${select.value}!`;
+    } else {
+      result.className = "result fail";
+      result.textContent = `💥 The potion fizzles out. Wrong ingredients or order — try again!`;
+    }
+    result.style.display = "block";
+  }
+
+  loadRecipe();
+</script>
+</body>
+</html>

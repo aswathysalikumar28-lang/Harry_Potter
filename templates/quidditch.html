@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Quidditch | Hogwarts</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background: linear-gradient(180deg,#1a2a40 0%,#0a1220 100%); color:#e8d5b7; font-family:'Lato',sans-serif; min-height:100vh; padding-bottom:60px; }
+nav { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; padding:16px; background:rgba(0,0,0,0.5); backdrop-filter:blur(10px); position:sticky; top:0; z-index:100; border-bottom:1px solid rgba(240,192,64,0.2); }
+nav a { color:#f0c040; text-decoration:none; font-family:'Cinzel',serif; font-size:0.85rem; letter-spacing:1px; }
+nav a:hover { color:#fff; }
+header { text-align:center; padding:40px 20px 10px; }
+header h1 { font-family:'Cinzel',serif; font-size:2rem; color:#f0c040; text-shadow:0 0 20px rgba(240,192,64,0.5); }
+header p { color:#a89060; margin-top:8px; }
+.scoreboard { display:flex; justify-content:center; gap:24px; flex-wrap:wrap; max-width:900px; margin:30px auto; padding:0 20px; }
+.team { flex:1; min-width:280px; background:rgba(0,0,0,0.5); backdrop-filter:blur(10px); border-radius:16px; padding:28px; text-align:center; border:2px solid; }
+.team input.teamname { background:transparent; border:none; border-bottom:1px solid rgba(240,192,64,0.3); color:#f0c040; font-family:'Cinzel',serif; font-size:1.2rem; text-align:center; padding:6px; margin-bottom:16px; width:80%; }
+.score { font-size:3.5rem; font-weight:bold; color:#fff; margin:10px 0; text-shadow:0 0 20px rgba(255,255,255,0.2); }
+.btn-row { display:flex; gap:8px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+.btn-row button { font-family:'Cinzel',serif; border:none; padding:10px 16px; border-radius:8px; cursor:pointer; font-weight:bold; font-size:0.85rem; }
+.quaffle-btn { background:rgba(240,192,64,0.25); color:#f0c040; }
+.snitch-btn { background:linear-gradient(135deg,#ffd700,#b8860b); color:#0a0a1a; }
+.vs { text-align:center; font-family:'Cinzel',serif; font-size:1.5rem; color:#a89060; align-self:center; }
+.controls { text-align:center; margin-top:10px; }
+.reset-btn { background:rgba(255,255,255,0.1); color:#e8d5b7; border:none; padding:10px 24px; border-radius:8px; font-family:'Cinzel',serif; cursor:pointer; }
+.winner-banner { text-align:center; margin:20px auto; max-width:500px; padding:16px; border-radius:10px; background:rgba(255,215,0,0.15); border:1px solid #ffd700; color:#ffd700; font-family:'Cinzel',serif; display:none; }
+</style>
+</head>
+<body>
+<nav>
+  <a href="/home">🏠 Home</a>
+  <a href="/sorting">🎩 Sorting Hat</a>
+  <a href="/spells">📖 Spell Book</a>
+  <a href="/halloffame">🏆 Hall of Fame</a>
+  <a href="/map">🗺️ Map</a>
+  <a href="/potions">🧪 Potions</a>
+  <a href="/patronus">🦌 Patronus</a>
+  <a href="/prophet">📰 Prophet</a>
+  <a href="/quidditch">🏐 Quidditch</a>
+</nav>
+
+<header>
+  <h1>🏐 Quidditch Score Tracker</h1>
+  <p>Goals are worth 10, catching the Snitch is worth 150 and ends the match</p>
+</header>
+
+<div class="winner-banner" id="winnerBanner"></div>
+
+<div class="scoreboard">
+  <div class="team" style="border-color:#740001;">
+    <input class="teamname" id="team1name" value="Gryffindor">
+    <div class="score" id="score1">0</div>
+    <div class="btn-row">
+      <button class="quaffle-btn" onclick="addScore(1,10)">+10 Goal</button>
+      <button class="snitch-btn" onclick="catchSnitch(1)">+150 Snitch 🐍</button>
+    </div>
+  </div>
+  <div class="vs">VS</div>
+  <div class="team" style="border-color:#1a472a;">
+    <input class="teamname" id="team2name" value="Slytherin">
+    <div class="score" id="score2">0</div>
+    <div class="btn-row">
+      <button class="quaffle-btn" onclick="addScore(2,10)">+10 Goal</button>
+      <button class="snitch-btn" onclick="catchSnitch(2)">+150 Snitch 🐍</button>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="reset-btn" onclick="resetGame()">🔄 Reset Match</button>
+</div>
+
+<script>
+  let scores = { 1: 0, 2: 0 };
+  let gameOver = false;
+
+  function addScore(team, pts) {
+    if (gameOver) return;
+    scores[team] += pts;
+    document.getElementById("score" + team).textContent = scores[team];
+  }
+
+  function catchSnitch(team) {
+    if (gameOver) return;
+    addScore(team, 150);
+    gameOver = true;
+    const name = document.getElementById("team" + team + "name").value;
+    const banner = document.getElementById("winnerBanner");
+    banner.style.display = "block";
+    banner.textContent = `🏆 ${name} wins the match, ${scores[1]} - ${scores[2]}, after catching the Golden Snitch!`;
+  }
+
+  function resetGame() {
+    scores = { 1: 0, 2: 0 };
+    gameOver = false;
+    document.getElementById("score1").textContent = 0;
+    document.getElementById("score2").textContent = 0;
+    document.getElementById("winnerBanner").style.display = "none";
+  }
+</script>
+</body>
+</html>

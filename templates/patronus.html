@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Patronus Charm | Hogwarts</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background: radial-gradient(ellipse at top, #1a2540 0%, #050810 70%); color:#e8d5b7; font-family:'Lato',sans-serif; min-height:100vh; padding-bottom:60px; }
+nav { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; padding:16px; background:rgba(0,0,0,0.5); backdrop-filter:blur(10px); position:sticky; top:0; z-index:100; border-bottom:1px solid rgba(240,192,64,0.2); }
+nav a { color:#f0c040; text-decoration:none; font-family:'Cinzel',serif; font-size:0.85rem; letter-spacing:1px; }
+nav a:hover { color:#fff; }
+.container { max-width:600px; margin:60px auto; text-align:center; padding:20px; }
+.icon { font-size:6rem; filter:drop-shadow(0 0 25px rgba(150,200,255,0.7)); animation:glow 3s ease-in-out infinite; }
+@keyframes glow { 0%,100%{filter:drop-shadow(0 0 15px rgba(150,200,255,0.5));} 50%{filter:drop-shadow(0 0 35px rgba(150,200,255,0.9));} }
+h1 { font-family:'Cinzel',serif; font-size:2rem; color:#bcd4ff; margin:20px 0 10px; text-shadow:0 0 20px rgba(150,200,255,0.5); }
+p.sub { color:#8fa3c8; margin-bottom:30px; }
+.form-box { background:rgba(255,255,255,0.04); backdrop-filter:blur(16px); border:1px solid rgba(150,200,255,0.25); border-radius:18px; padding:32px; }
+textarea { width:100%; min-height:100px; background:rgba(0,0,0,0.3); border:1px solid rgba(150,200,255,0.25); color:#e8d5b7; padding:14px; border-radius:10px; font-family:'Lato',sans-serif; font-size:0.95rem; resize:vertical; outline:none; }
+textarea:focus { border-color:#bcd4ff; }
+button { margin-top:14px; width:100%; background:linear-gradient(135deg,#bcd4ff,#7a9bd6); color:#0a0a1a; border:none; padding:14px; border-radius:10px; font-family:'Cinzel',serif; font-weight:bold; font-size:1rem; cursor:pointer; }
+button:disabled { opacity:0.6; }
+.result { display:none; margin-top:30px; padding:30px; border-radius:18px; border:1px solid rgba(150,200,255,0.4); background:rgba(255,255,255,0.04); backdrop-filter:blur(16px); animation:fadeIn 0.6s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(20px);} to{opacity:1;transform:translateY(0);} }
+.result-animal { font-family:'Cinzel',serif; font-size:1.8rem; color:#bcd4ff; margin:10px 0; }
+.result-desc { color:#c8d4ea; font-style:italic; line-height:1.7; }
+</style>
+</head>
+<body>
+<nav>
+  <a href="/home">🏠 Home</a>
+  <a href="/sorting">🎩 Sorting Hat</a>
+  <a href="/spells">📖 Spell Book</a>
+  <a href="/halloffame">🏆 Hall of Fame</a>
+  <a href="/map">🗺️ Map</a>
+  <a href="/potions">🧪 Potions</a>
+  <a href="/patronus">🦌 Patronus</a>
+  <a href="/prophet">📰 Prophet</a>
+  <a href="/quidditch">🏐 Quidditch</a>
+</nav>
+
+<div class="container">
+  <div class="icon">🦌</div>
+  <h1>Expecto Patronum</h1>
+  <p class="sub">Think of your happiest memory, and discover your Patronus</p>
+
+  <div class="form-box">
+    <textarea id="memoryInput" placeholder="Describe your happiest memory..."></textarea>
+    <button onclick="castPatronus()">Cast the Charm ✨</button>
+  </div>
+
+  <div class="result" id="result">
+    <div style="font-size:3rem;" id="resultEmoji">✨</div>
+    <div class="result-animal" id="resultAnimal"></div>
+    <p class="result-desc" id="resultDesc"></p>
+  </div>
+</div>
+
+<script>
+  async function castPatronus() {
+    const memory = document.getElementById("memoryInput").value.trim();
+    if (!memory) return alert("Think of a happy memory first!");
+
+    const btn = document.querySelector("button");
+    btn.disabled = true;
+    const msgs = ["✨ Channeling happiness...","✨ Expecto Patronum...","✨ A shape is forming..."];
+    let i = 0;
+    const interval = setInterval(() => { btn.textContent = msgs[i % msgs.length]; i++; }, 800);
+
+    const res = await fetch("/generate_patronus", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ memory })
+    });
+
+    clearInterval(interval);
+    const data = await res.json();
+
+    document.getElementById("result").style.display = "block";
+    document.getElementById("resultAnimal").textContent = data.animal;
+    document.getElementById("resultDesc").textContent = data.description;
+
+    btn.textContent = "Cast the Charm ✨";
+    btn.disabled = false;
+  }
+</script>
+</body>
+</html>

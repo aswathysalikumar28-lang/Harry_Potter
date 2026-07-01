@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sorting Hat | Hogwarts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    .video-bg {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -1;
+      background: url('/static/images/hogsmade.jpg') center/cover no-repeat;
+      filter: brightness(0.3);
+    }
+    body { color: #e8d5b7; font-family: 'Lato', sans-serif; min-height: 100vh; }
+    nav { display: flex; justify-content: center; gap: 30px; padding: 16px; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(240,192,64,0.2); }
+    nav a { color: #f0c040; text-decoration: none; font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 1px; transition: color 0.2s; }
+    nav a:hover { color: #fff; }
+    .container { max-width: 600px; margin: 60px auto; text-align: center; padding: 20px; }
+    .hat { font-size: 8rem; animation: float 3s ease-in-out infinite; filter: drop-shadow(0 0 20px rgba(240,192,64,0.5)); }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+    h1 { font-family: 'Cinzel', serif; font-size: 2.2rem; color: #f0c040; margin: 20px 0 10px; text-shadow: 0 0 30px rgba(240,192,64,0.7), 0 0 60px rgba(240,192,64,0.3); }
+    p { color: #a89060; margin-bottom: 30px; letter-spacing: 1px; }
+    .sort-form {
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(240,192,64,0.4);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 0 40px rgba(240,192,64,0.1), inset 0 0 40px rgba(0,0,0,0.3);
+    }
+    .sort-form input {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(240,192,64,0.3);
+      color: #e8d5b7;
+      padding: 14px 18px;
+      border-radius: 10px;
+      font-size: 1rem;
+      margin-bottom: 16px;
+      transition: border-color 0.3s;
+      outline: none;
+    }
+    .sort-form input:focus { border-color: #f0c040; box-shadow: 0 0 10px rgba(240,192,64,0.2); }
+    .sort-form button {
+      width: 100%;
+      background: linear-gradient(135deg, #f0c040, #c8960c);
+      color: #0a0a1a;
+      border: none;
+      padding: 16px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      transition: opacity 0.2s, transform 0.1s;
+      box-shadow: 0 4px 20px rgba(240,192,64,0.3);
+    }
+    .sort-form button:hover { opacity: 0.9; transform: translateY(-2px); }
+    .sort-form button:disabled { opacity: 0.6; transform: none; }
+    .result {
+      display: none;
+      margin-top: 30px;
+      padding: 30px;
+      border-radius: 20px;
+      border: 2px solid;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(16px);
+      animation: fadeIn 0.6s ease;
+      box-shadow: 0 0 40px rgba(240,192,64,0.15);
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .result-emoji { font-size: 3.5rem; margin-bottom: 10px; animation: pop 0.4s ease; }
+    @keyframes pop { 0% { transform: scale(0); } 80% { transform: scale(1.2); } 100% { transform: scale(1); } }
+    .result-house { font-family: 'Cinzel', serif; font-size: 2rem; margin: 10px 0; color: #f0c040; text-shadow: 0 0 20px rgba(240,192,64,0.5); }
+    .result-reason { color: #c8a870; font-style: italic; line-height: 1.8; font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+
+  <div class="video-bg"></div>
+
+  <nav>
+    <a href="/home">🏠 Home</a>
+    <a href="/sorting">🎩 Sorting Hat</a>
+    <a href="/spells">📖 Spell Book</a>
+    <a href="/halloffame">🏆 Hall of Fame</a>
+     <a href="/map">🗺️ Map</a>
+  <a href="/potions">🧪 Potions</a>
+  <a href="/patronus">🦌 Patronus</a>
+  <a href="/prophet">📰 Prophet</a>
+  <a href="/quidditch">🏐 Quidditch</a>
+  </nav>
+
+  <div class="container">
+    <div class="hat">🎩</div>
+    <h1>The Sorting Hat</h1>
+    <p>Enter your name and discover which house you truly belong to</p>
+
+    <div class="sort-form">
+      <input type="text" id="nameInput" placeholder="Enter your name..." />
+      <button onclick="sortMe()">Sort Me! ✨</button>
+    </div>
+
+    <div class="result" id="result">
+      <div class="result-emoji" id="resultEmoji"></div>
+      <div class="result-house" id="resultHouse"></div>
+      <p class="result-reason" id="resultReason"></p>
+    </div>
+  </div>
+
+  <script>
+    const houseColors = {
+      Gryffindor: { color: "#740001", emoji: "🦁" },
+      Slytherin: { color: "#1a472a", emoji: "🐍" },
+      Ravenclaw: { color: "#0e1a40", emoji: "🦅" },
+      Hufflepuff: { color: "#ecb939", emoji: "🦡" }
+    };
+
+    async function sortMe() {
+      const name = document.getElementById("nameInput").value.trim();
+      if (!name) return alert("Enter your name first!");
+
+      const btn = document.querySelector(".sort-form button");
+      btn.textContent = "🎩 Hmm... let me think...";
+      btn.disabled = true;
+
+      const res = await fetch("/sort_me", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name })
+      });
+
+      const data = await res.json();
+      const house = houseColors[data.house];
+
+      const resultEl = document.getElementById("result");
+      resultEl.style.display = "block";
+      resultEl.style.borderColor = house.color;
+      resultEl.style.boxShadow = `0 0 40px ${house.color}55`;
+      document.getElementById("resultEmoji").textContent = house.emoji;
+      document.getElementById("resultHouse").textContent = data.house;
+      document.getElementById("resultReason").textContent = data.reason;
+
+      btn.textContent = "Sort Me! ✨";
+      btn.disabled = false;
+    }
+  </script>
+</body>
+</html>

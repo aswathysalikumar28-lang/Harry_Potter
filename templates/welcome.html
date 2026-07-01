@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to Hogwarts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    .video-bg {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: -2; overflow: hidden;
+    }
+
+    .video-bg video {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: brightness(0.32) saturate(1.1);
+    }
+
+    .vignette {
+      position: fixed; inset: 0;
+      z-index: -1;
+      background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.75) 100%);
+      pointer-events: none;
+    }
+
+    body {
+      color: #e8d5b7;
+      font-family: 'Lato', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .particles {
+      position: fixed; inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .spark {
+      position: absolute;
+      width: 3px; height: 3px;
+      background: #f0c040;
+      border-radius: 50%;
+      box-shadow: 0 0 8px 2px rgba(240,192,64,0.8);
+      animation: drift linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes drift {
+      0% { transform: translateY(110vh) translateX(0); opacity: 0; }
+      10% { opacity: 0.9; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(-10vh) translateX(40px); opacity: 0; }
+    }
+
+    .content {
+      animation: fadeIn 2s ease;
+      padding: 20px;
+      position: relative;
+      z-index: 2;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .crest-row {
+      display: flex;
+      justify-content: center;
+      gap: 26px;
+      margin-bottom: 18px;
+      animation: dropIn 1.4s ease;
+    }
+
+    @keyframes dropIn {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .crest-row span {
+      font-size: 1.6rem;
+      opacity: 0.85;
+      filter: drop-shadow(0 0 10px rgba(240,192,64,0.5));
+    }
+
+    .bolt {
+      font-size: 3.2rem;
+      margin-bottom: 6px;
+      filter: drop-shadow(0 0 25px rgba(240,192,64,0.8));
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { filter: drop-shadow(0 0 18px rgba(240,192,64,0.6)); transform: scale(1); }
+      50% { filter: drop-shadow(0 0 35px rgba(240,192,64,1)); transform: scale(1.08); }
+    }
+
+    h1 {
+      font-family: 'Cinzel Decorative', 'Cinzel', serif;
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      color: #f4d27a;
+      text-shadow:
+        0 0 20px rgba(240,192,64,0.8),
+        0 0 60px rgba(240,192,64,0.4),
+        0 0 120px rgba(240,192,64,0.2);
+      letter-spacing: 3px;
+      line-height: 1.15;
+    }
+
+    .underline-deco {
+      width: 140px;
+      height: 1px;
+      margin: 22px auto;
+      background: linear-gradient(90deg, transparent, #f0c040, transparent);
+      position: relative;
+    }
+
+    .underline-deco::before {
+      content: "✦";
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: #f0c040;
+      font-size: 0.9rem;
+      background: transparent;
+    }
+
+    .tagline {
+      font-style: italic;
+      color: #d6bb8a;
+      font-size: 1.15rem;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+
+    .subtagline {
+      color: #8a7355;
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 46px;
+    }
+
+    .get-started {
+      position: relative;
+      background: linear-gradient(135deg, #f4d27a, #c8960c);
+      color: #1a1308;
+      border: none;
+      padding: 18px 52px;
+      border-radius: 6px;
+      font-family: 'Cinzel', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow:
+        0 8px 30px rgba(240,192,64,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.4);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      overflow: hidden;
+    }
+
+    .get-started::before {
+      content: "";
+      position: absolute;
+      top: 0; left: -120%;
+      width: 60%; height: 100%;
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,0.6), transparent);
+      transform: skewX(-25deg);
+      transition: left 0.6s ease;
+    }
+
+    .get-started:hover {
+      transform: translateY(-4px) scale(1.03);
+      box-shadow:
+        0 14px 45px rgba(240,192,64,0.65),
+        inset 0 1px 0 rgba(255,255,255,0.5);
+    }
+
+    .get-started:hover::before { left: 130%; }
+
+    .mute-btn {
+      position: fixed;
+      bottom: 26px;
+      right: 26px;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(240,192,64,0.4);
+      color: #f0c040;
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 10;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .mute-btn:hover { background: rgba(240,192,64,0.2); transform: scale(1.08); }
+
+    .corner-text {
+      position: fixed;
+      bottom: 22px;
+      left: 26px;
+      font-family: 'Cinzel', serif;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      color: rgba(232,213,183,0.4);
+      z-index: 5;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="video-bg">
+    <video autoplay muted loop playsinline id="bgVideo">
+      <source src="/static/videos/harry.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="vignette"></div>
+  <div class="particles" id="particles"></div>
+
+  <audio id="bgMusic" src="/static/audio/theme.mp3" loop></audio>
+
+  <div class="content">
+    <div class="crest-row">
+      <span>🦁</span><span>🐍</span><span>🦅</span><span>🦡</span>
+    </div>
+    <div class="bolt">⚡</div>
+    <h1>Welcome to<br>Hogwarts</h1>
+    <div class="underline-deco"></div>
+    <p class="tagline">School of Witchcraft and Wizardry</p>
+    <p class="subtagline">Est. 990 · Draco Dormiens Nunquam Titillandus</p>
+    <a href="/home" class="get-started" onclick="stopMusic()">Get Started ✨</a>
+  </div>
+
+  <div class="corner-text">House Points Tracker</div>
+  <button class="mute-btn" id="muteBtn" onclick="toggleMusic()">🔇</button>
+
+  <script>
+    const music = document.getElementById("bgMusic");
+    const muteBtn = document.getElementById("muteBtn");
+    let playing = false;
+
+    function toggleMusic() {
+      if (playing) {
+        music.pause();
+        muteBtn.textContent = "🔇";
+      } else {
+        music.play().catch(() => {});
+        muteBtn.textContent = "🔊";
+      }
+      playing = !playing;
+    }
+
+    function stopMusic() {
+      music.pause();
+    }
+
+    const container = document.getElementById("particles");
+    const sparkCount = 35;
+    for (let i = 0; i < sparkCount; i++) {
+      const s = document.createElement("div");
+      s.className = "spark";
+      s.style.left = Math.random() * 100 + "vw";
+      s.style.animationDuration = (6 + Math.random() * 10) + "s";
+      s.style.animationDelay = (Math.random() * 10) + "s";
+      s.style.opacity = 0.3 + Math.random() * 0.5;
+      container.appendChild(s);
+    }
+  </script>
+
+</body>
+</html>

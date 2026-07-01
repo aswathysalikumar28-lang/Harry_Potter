@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Marauder's Map | Hogwarts</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#1a1410; color:#e8d5b7; font-family:'Lato',sans-serif; min-height:100vh; padding-bottom:60px; }
+nav { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; padding:16px; background:rgba(0,0,0,0.5); backdrop-filter:blur(10px); position:sticky; top:0; z-index:100; border-bottom:1px solid rgba(240,192,64,0.2); }
+nav a { color:#f0c040; text-decoration:none; font-family:'Cinzel',serif; font-size:0.85rem; letter-spacing:1px; }
+nav a:hover { color:#fff; }
+header { text-align:center; padding:40px 20px 20px; }
+header h1 { font-family:'Cinzel',serif; font-size:2rem; color:#f0c040; text-shadow:0 0 20px rgba(240,192,64,0.5); }
+header p { color:#a89060; margin-top:8px; font-style:italic; }
+.map-wrap { max-width:900px; margin:30px auto; padding:0 20px; }
+.map { position:relative; height:500px; background: radial-gradient(ellipse at center, #3a2f1f 0%, #241c12 100%); border:3px solid #6b5a3a; border-radius:6px; box-shadow:0 0 60px rgba(0,0,0,0.6) inset, 0 0 30px rgba(240,192,64,0.1); overflow:hidden; }
+.map::before { content:""; position:absolute; inset:0; background-image: repeating-linear-gradient(0deg, transparent, transparent 38px, rgba(240,192,64,0.05) 39px), repeating-linear-gradient(90deg, transparent, transparent 38px, rgba(240,192,64,0.05) 39px); }
+.castle-label { position:absolute; font-family:'Cinzel',serif; font-size:0.75rem; color:#c8a870; opacity:0.6; letter-spacing:1px; }
+.name-dot { position:absolute; font-family:'Cinzel',serif; font-size:0.8rem; color:#f0c040; white-space:nowrap; text-shadow:0 0 8px rgba(240,192,64,0.8); animation: appear 4s ease forwards; pointer-events:none; }
+.name-dot::before { content:"•"; margin-right:4px; }
+@keyframes appear { 0% { opacity:0; transform:scale(0.5); } 15% { opacity:1; transform:scale(1); } 85% { opacity:1; } 100% { opacity:0; } }
+.controls { text-align:center; margin-top:20px; color:#a89060; font-size:0.85rem; }
+.mischief { display:block; margin:20px auto 0; background:linear-gradient(135deg,#f0c040,#c8960c); color:#0a0a1a; border:none; padding:12px 28px; border-radius:8px; font-family:'Cinzel',serif; font-weight:bold; cursor:pointer; }
+</style>
+</head>
+<body>
+<nav>
+  <a href="/home">🏠 Home</a>
+  <a href="/sorting">🎩 Sorting Hat</a>
+  <a href="/spells">📖 Spell Book</a>
+  <a href="/halloffame">🏆 Hall of Fame</a>
+  <a href="/map">🗺️ Map</a>
+  <a href="/potions">🧪 Potions</a>
+  <a href="/patronus">🦌 Patronus</a>
+  <a href="/prophet">📰 Prophet</a>
+  <a href="/quidditch">🏐 Quidditch</a>
+</nav>
+
+<header>
+  <h1>🗺️ The Marauder's Map</h1>
+  <p>"I solemnly swear that I am up to no good"</p>
+</header>
+
+<div class="map-wrap">
+  <div class="map" id="mapArea">
+    <span class="castle-label" style="top:10%;left:15%;">Great Hall</span>
+    <span class="castle-label" style="top:20%;left:60%;">Gryffindor Tower</span>
+    <span class="castle-label" style="top:60%;left:10%;">Dungeons</span>
+    <span class="castle-label" style="top:70%;left:55%;">Forbidden Forest</span>
+    <span class="castle-label" style="top:40%;left:80%;">Astronomy Tower</span>
+    <span class="castle-label" style="top:80%;left:80%;">Quidditch Pitch</span>
+  </div>
+  <button class="mischief" onclick="toggleMap()">Mischief Managed</button>
+</div>
+
+<script>
+  const names = ["Harry Potter","Hermione Granger","Ron Weasley","Draco Malfoy","Luna Lovegood","Neville Longbottom","Ginny Weasley","Severus Snape","Albus Dumbledore","Minerva McGonagall","Cho Chang","Fred Weasley"];
+  const mapArea = document.getElementById("mapArea");
+  let running = true;
+  let nameInterval;
+
+  function spawnName() {
+    if (!running) return;
+    const dot = document.createElement("div");
+    dot.className = "name-dot";
+    dot.textContent = names[Math.floor(Math.random()*names.length)];
+    dot.style.top = (10 + Math.random()*75) + "%";
+    dot.style.left = (5 + Math.random()*80) + "%";
+    mapArea.appendChild(dot);
+    setTimeout(() => dot.remove(), 4000);
+  }
+
+  nameInterval = setInterval(spawnName, 700);
+  for (let i=0;i<5;i++) setTimeout(spawnName, i*200);
+
+  function toggleMap() {
+    running = !running;
+    const btn = document.querySelector(".mischief");
+    btn.textContent = running ? "Mischief Managed" : "I Solemnly Swear...";
+  }
+</script>
+</body>
+</html>

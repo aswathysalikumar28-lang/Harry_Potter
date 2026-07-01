@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spell Book | Hogwarts</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      color: #e8d5b7;
+      font-family: 'Lato', sans-serif;
+      min-height: 100vh;
+      padding-bottom: 60px;
+      background:
+        url('/static/images/spells.jpg') center center / cover fixed no-repeat,
+        radial-gradient(ellipse at 20% 50%, #1a0a2e 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, #0d1a3a 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 80%, #1a1a0a 0%, transparent 50%),
+        #0a0a12;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 3, 15, 0.72);
+      z-index: 0;
+    }
+
+    /* Stars layer */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 40% 10%, rgba(255,255,255,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 25%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 85% 75%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 10%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 15% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 35% 90%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 60% 45%, rgba(255,255,255,0.7) 0%, transparent 100%),
+        radial-gradient(1px 1px at 75% 85%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 5% 55%, rgba(255,255,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 48% 30%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 92% 50%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 20% 65%, rgba(255,200,100,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 65% 5%, rgba(200,200,255,0.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80% 40%, rgba(255,255,255,0.3) 0%, transparent 100%),
+        radial-gradient(1.5px 1.5px at 30% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 50% 70%, rgba(255,255,255,0.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 95% 88%, rgba(255,255,255,0.5) 0%, transparent 100%);
+    }
+
+    /* Everything above the pseudo-elements */
+    nav, header, .search-bar, .spells-grid {
+      position: relative;
+      z-index: 1;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 16px;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(240,192,64,0.2);
+    }
+    nav a {
+      color: #f0c040;
+      text-decoration: none;
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: #fff; }
+
+    header {
+      text-align: center;
+      padding: 48px 20px 24px;
+    }
+    header h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      color: #f0c040;
+      text-shadow: 0 0 30px rgba(240,192,64,0.5), 0 0 60px rgba(240,192,64,0.2);
+      letter-spacing: 2px;
+    }
+    header p {
+      color: #a89060;
+      margin-top: 10px;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+    }
+
+    .search-bar {
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+    .search-bar input {
+      width: 100%;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(240,192,64,0.3);
+      color: #e8d5b7;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Lato', sans-serif;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-bar input:focus {
+      border-color: rgba(240,192,64,0.6);
+      box-shadow: 0 0 0 3px rgba(240,192,64,0.08);
+    }
+    .search-bar input::placeholder { color: #6a5a40; }
+
+    .spells-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .spell-card {
+      background: rgba(8, 5, 20, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(240,192,64,0.18);
+      border-radius: 12px;
+      padding: 20px;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .spell-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(240,192,64,0.55);
+      box-shadow: 0 8px 32px rgba(240,192,64,0.08);
+    }
+
+    .spell-name {
+      font-family: 'Cinzel', serif;
+      color: #f0c040;
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+    .spell-type {
+      font-size: 0.72rem;
+      color: #8a6a30;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
+    }
+    .spell-desc {
+      font-size: 0.88rem;
+      line-height: 1.6;
+      color: #c0a878;
+    }
+
+    .no-results {
+      text-align: center;
+      color: #6a5a40;
+      font-family: 'Cinzel', serif;
+      padding: 40px;
+      grid-column: 1 / -1;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/home">🏠 Home</a>
+    <a href="/sorting">🎩 Sorting Hat</a>
+    <a href="/spells">📖 Spell Book</a>
+    <a href="/halloffame">🏆 Hall of Fame</a>
+     <a href="/map">🗺️ Map</a>
+  <a href="/potions">🧪 Potions</a>
+  <a href="/patronus">🦌 Patronus</a>
+  <a href="/prophet">📰 Prophet</a>
+  <a href="/quidditch">🏐 Quidditch</a>
+  </nav>
+
+  <header>
+    <h1>📖 The Spell Book</h1>
+    <p>Every spell a witch or wizard needs to know</p>
+  </header>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search spells..." oninput="filterSpells()" />
+  </div>
+
+  <div class="spells-grid" id="spellsGrid"></div>
+
+  <script>
+    const spells = [
+      { name: "Expelliarmus", type: "Charm", desc: "Disarms your opponent, sending their wand flying through the air." },
+      { name: "Alohomora", type: "Charm", desc: "Unlocks doors and windows. The go-to spell for sneaking around Hogwarts." },
+      { name: "Lumos", type: "Charm", desc: "Creates a beam of light from the tip of your wand." },
+      { name: "Nox", type: "Charm", desc: "Extinguishes the light created by Lumos." },
+      { name: "Wingardium Leviosa", type: "Charm", desc: "Levitates objects into the air. Swish and flick!" },
+      { name: "Accio", type: "Charm", desc: "Summons an object to you from far away." },
+      { name: "Avada Kedavra", type: "Unforgivable Curse", desc: "The Killing Curse. One of the three Unforgivable Curses." },
+      { name: "Crucio", type: "Unforgivable Curse", desc: "Inflicts unbearable pain on the victim." },
+      { name: "Imperio", type: "Unforgivable Curse", desc: "Places the victim under complete control of the caster." },
+      { name: "Expecto Patronum", type: "Charm", desc: "Conjures a Patronus — a guardian that repels Dementors." },
+      { name: "Riddikulus", type: "Charm", desc: "Forces a Boggart to take on a humorous form, weakening it." },
+      { name: "Stupefy", type: "Jinx", desc: "Stuns the target, rendering them unconscious." },
+      { name: "Protego", type: "Charm", desc: "Creates a magical shield that deflects spells and physical entities." },
+      { name: "Finite Incantatem", type: "Counter-Charm", desc: "Ends the effects of spells currently in operation." },
+      { name: "Sectumsempra", type: "Dark Spell", desc: "Causes deep, slashing wounds on the target. Invented by Snape." },
+      { name: "Legilimens", type: "Spell", desc: "Allows the caster to read the mind of another person." },
+      { name: "Obliviate", type: "Charm", desc: "Erases specific memories from the victim's mind." },
+      { name: "Reparo", type: "Charm", desc: "Repairs broken or damaged objects." },
+      { name: "Incendio", type: "Charm", desc: "Produces fire from the wand tip." },
+      { name: "Aguamenti", type: "Charm", desc: "Conjures a jet of clean, drinkable water from the wand." },
+      { name: "Serpensortia", type: "Conjuration", desc: "Conjures a serpent from the tip of the wand." },
+      { name: "Petrificus Totalus", type: "Curse", desc: "Binds the victim's entire body, leaving them rigid." },
+      { name: "Episkey", type: "Healing Spell", desc: "Heals minor to moderate injuries." },
+      { name: "Engorgio", type: "Charm", desc: "Enlarges the target. The counter-spell is Reducio." },
+    ];
+
+    function renderSpells(list) {
+      const grid = document.getElementById("spellsGrid");
+      if (list.length === 0) {
+        grid.innerHTML = '<div class="no-results">No spells found...</div>';
+        return;
+      }
+      grid.innerHTML = list.map(s => `
+        <div class="spell-card">
+          <div class="spell-name">✨ ${s.name}</div>
+          <div class="spell-type">${s.type}</div>
+          <div class="spell-desc">${s.desc}</div>
+        </div>
+      `).join("");
+    }
+
+    function filterSpells() {
+      const q = document.getElementById("searchInput").value.toLowerCase();
+      renderSpells(spells.filter(s =>
+        s.name.toLowerCase().includes(q) ||
+        s.desc.toLowerCase().includes(q) ||
+        s.type.toLowerCase().includes(q)
+      ));
+    }
+
+    renderSpells(spells);
+  </script>
+</body>
+</html>
